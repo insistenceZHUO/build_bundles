@@ -1,25 +1,58 @@
 import 'package:flutter/material.dart';
 
+/// 在provider中，如果
 class ProviderTodoList extends ChangeNotifier {
   ProviderTodoList() {
     _list = data.map((e) => Person.fromJson(e)).toList();
     notifyListeners();
   }
 
+  List<Person> _searchList = [];
+
+  List<Person> get searchList => _searchList;
+
   List<Person> _list = [];
 
-  List<Person> get list => _list;
+  List<Person> get list {
+    var a = _list.map((e) => e).toList();
+    return a;
+  }
 
   /// 搜索
-  void searchList(String text) {
-    _list = _list.where((element) => element.name.toUpperCase().contains(text.toUpperCase())).toList();
-     notifyListeners();
+  void setSearchList(String text) {
+    _searchList = _list
+        .where((element) =>
+            element.name.toUpperCase().contains(text.toUpperCase()))
+        .toList();
+    notifyListeners();
+  }
+
+  /// 删除
+  void deletePerson(int index) {
+    _list.removeAt(index);
+    notifyListeners();
+  }
+
+  /// 修改
+  void editPerson(int index) {
+    print('index:${index}');
+    _list[index].name = '修改了这条数据';
+    notifyListeners();
+  }
+
+  /// 添加
+  void addPerson() {
+    var person = Person.fromJson({
+      "name": '新增一条数据',
+    });
+    _list.add(person);
+    notifyListeners();
   }
 }
 
 class Person {
-  final String name;
-  final String note;
+  late String name;
+  late String note;
 
   Person({required this.name, required this.note});
 
@@ -28,7 +61,7 @@ class Person {
 }
 
 List<Map<String, String>> data = [
-  {"name": 'adsadsadsad', "note": '一个程序员'},
-  {"name": 'ljkljljkl', "note": '一个程序员'},
-  {"name": 'wqrqweqwewqe', "note": '一个程序员'}
+  {"name": 'adsadsadsad', "note": '程序员'},
+  {"name": 'ljkljljkl', "note": '程序员'},
+  {"name": 'wqrqweqwewqe', "note": '程序员'}
 ];

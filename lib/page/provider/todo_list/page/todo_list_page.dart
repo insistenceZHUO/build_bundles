@@ -24,10 +24,16 @@ class _TodoListPageState extends State<TodoListPage> {
     return ChangeNotifierProvider(
         create: (_) => _provider,
         child: Builder(builder: (context) {
+          // var person = context.select((ProviderTodoList value) => value.list);
           var person = context.watch<ProviderTodoList>().list;
           return Scaffold(
             appBar: AppBar(
               title: const Text('todo list'),
+              actions: [
+                TextButton(onPressed: (){
+                  context.read<ProviderTodoList>().addPerson();
+                }, child: Text('新增一条数据'))
+              ],
             ),
             body: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 30),
@@ -35,11 +41,19 @@ class _TodoListPageState extends State<TodoListPage> {
                 children: [
                   TodoListSearchView(
                     onChanged: (String value) {
-                      context.read<ProviderTodoList>().searchList(value);
+                      context.read<ProviderTodoList>().setSearchList(value);
                     },
                   ),
                   TodoListView(
                     persons: person,
+                    onDelete: (index) {
+                      context.read<ProviderTodoList>().deletePerson(index);
+                    },
+                    onEdit: (int index) {
+                      context.read<ProviderTodoList>().editPerson(index);
+                    }, onAdd: () {
+                    context.read<ProviderTodoList>().addPerson();
+                  },
                   ),
                 ],
               ),
@@ -77,8 +91,14 @@ class TodoListView extends StatelessWidget {
   const TodoListView({
     Key? key,
     required this.persons,
+    required this.onDelete,
+    required this.onEdit,
+    required this.onAdd,
   }) : super(key: key);
   final List<Person> persons;
+  final Function(int index) onDelete;
+  final Function(int index) onEdit;
+  final VoidCallback onAdd;
 
   @override
   Widget build(BuildContext context) {
@@ -88,8 +108,42 @@ class TodoListView extends StatelessWidget {
         var p = persons[index];
         return ListTile(
           title: Text(p.name),
-          subtitle: Text(p.note),
+          subtitle: Row(
+            children: [
+              Text(p.note),
+              TextButton(
+                onPressed: () {
+                  onDelete.call(index);
+                },
+                child: const Text('删除'),
+              ),
+            ],
+          ),
           leading: const FlutterLogo(),
+          trailing: Column(
+            children: [
+              // TextButton(
+              //   onPressed: () {
+              //     onDelete.call(index);
+              //   },
+              //   child: const Text('删除'),
+              // ),
+
+              TextButton(
+                onPressed: () {
+                  onEdit.call(index);
+                },
+                child: const Text('修改'),
+              ),
+
+              // TextButton(
+              //   onPressed: () {
+              //     onAdd.call();
+              //   },
+              //   child: const Text('添加'),
+              // ),
+            ],
+          ),
         );
       },
       itemCount: persons.length,
