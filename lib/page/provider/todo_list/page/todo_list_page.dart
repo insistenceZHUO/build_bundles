@@ -30,9 +30,11 @@ class _TodoListPageState extends State<TodoListPage> {
             appBar: AppBar(
               title: const Text('todo list'),
               actions: [
-                TextButton(onPressed: (){
-                  context.read<ProviderTodoList>().addPerson();
-                }, child: Text('新增一条数据'))
+                TextButton(
+                    onPressed: () {
+                      context.read<ProviderTodoList>().addPerson();
+                    },
+                    child: Text('新增一条数据'))
               ],
             ),
             body: Padding(
@@ -44,16 +46,22 @@ class _TodoListPageState extends State<TodoListPage> {
                       context.read<ProviderTodoList>().setSearchList(value);
                     },
                   ),
-                  TodoListView(
-                    persons: person,
-                    onDelete: (index) {
-                      context.read<ProviderTodoList>().deletePerson(index);
+                  Selector<ProviderTodoList, List<Person>>(
+                    builder: (c, v, _) {
+                      return TodoListView(
+                        persons: person,
+                        onDelete: (index) {
+                          context.read<ProviderTodoList>().deletePerson(index);
+                        },
+                        onEdit: (int index) {
+                          context.read<ProviderTodoList>().editPerson(index);
+                        },
+                        onAdd: () {
+                          context.read<ProviderTodoList>().addPerson();
+                        },
+                      );
                     },
-                    onEdit: (int index) {
-                      context.read<ProviderTodoList>().editPerson(index);
-                    }, onAdd: () {
-                    context.read<ProviderTodoList>().addPerson();
-                  },
+                    selector: (c, v) => v.list,
                   ),
                 ],
               ),

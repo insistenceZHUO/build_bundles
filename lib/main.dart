@@ -64,6 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextButton(
               onPressed: () {
@@ -82,6 +83,26 @@ class _MyHomePageState extends State<MyHomePage> {
                 }));
               },
               child: const Text('第一章：绘制的开篇;'),
+            ),
+
+            TextButton(
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (BuildContext context) {
+                  return const Chapter1Page();
+                }));
+              },
+              child: const Text('第二章：来看光影流动之美;'),
+            ),
+
+            TextButton(
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (BuildContext context) {
+                  return const Chapter1Page();
+                }));
+              },
+              child: const Text('Stream'),
             ),
           ],
         ),
