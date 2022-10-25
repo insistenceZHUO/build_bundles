@@ -24,17 +24,18 @@ class _TodoListPageState extends State<TodoListPage> {
     return ChangeNotifierProvider(
         create: (_) => _provider,
         child: Builder(builder: (context) {
-          // var person = context.select((ProviderTodoList value) => value.list);
-          var person = context.watch<ProviderTodoList>().list;
+          var person = context.select((ProviderTodoList value) => value.list);
+          // var person = context.watch<ProviderTodoList>().list;
           return Scaffold(
             appBar: AppBar(
               title: const Text('todo list'),
               actions: [
                 TextButton(
-                    onPressed: () {
-                      context.read<ProviderTodoList>().addPerson();
-                    },
-                    child: Text('新增一条数据'))
+                  onPressed: () {
+                    context.read<ProviderTodoList>().addPerson();
+                  },
+                  child: const Text('新增一条数据'),
+                )
               ],
             ),
             body: Padding(
@@ -46,22 +47,17 @@ class _TodoListPageState extends State<TodoListPage> {
                       context.read<ProviderTodoList>().setSearchList(value);
                     },
                   ),
-                  Selector<ProviderTodoList, List<Person>>(
-                    builder: (c, v, _) {
-                      return TodoListView(
-                        persons: person,
-                        onDelete: (index) {
-                          context.read<ProviderTodoList>().deletePerson(index);
-                        },
-                        onEdit: (int index) {
-                          context.read<ProviderTodoList>().editPerson(index);
-                        },
-                        onAdd: () {
-                          context.read<ProviderTodoList>().addPerson();
-                        },
-                      );
+                  TodoListView(
+                    persons: person,
+                    onDelete: (index) {
+                      context.read<ProviderTodoList>().deletePerson(index);
                     },
-                    selector: (c, v) => v.list,
+                    onEdit: (int index) {
+                      context.read<ProviderTodoList>().editPerson(index);
+                    },
+                    onAdd: () {
+                      context.read<ProviderTodoList>().addPerson();
+                    },
                   ),
                 ],
               ),
@@ -113,46 +109,51 @@ class TodoListView extends StatelessWidget {
     return Expanded(
         child: ListView.builder(
       itemBuilder: (context, index) {
-        var p = persons[index];
-        return ListTile(
-          title: Text(p.name),
-          subtitle: Row(
-            children: [
-              Text(p.note),
-              TextButton(
-                onPressed: () {
-                  onDelete.call(index);
-                },
-                child: const Text('删除'),
-              ),
-            ],
-          ),
-          leading: const FlutterLogo(),
-          trailing: Column(
-            children: [
-              // TextButton(
-              //   onPressed: () {
-              //     onDelete.call(index);
-              //   },
-              //   child: const Text('删除'),
-              // ),
+        return Selector<ProviderTodoList, List<Person>>(
+            selector: (c, p) => p.list,
+            shouldRebuild: (p, n) => true,
+            builder: (context, person, child) {
+              var p = person[index];
+              // assert(1 <2);
+              return ListTile(
+                title: Text(p.name),
+                subtitle: Row(
+                  children: [
+                    Text(p.note),
+                    TextButton(
+                      onPressed: () {
+                        onDelete.call(index);
+                      },
+                      child: const Text('删除'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        onAdd.call();
+                      },
+                      child: const Text('添加'),
+                    ),
+                  ],
+                ),
+                leading: const FlutterLogo(),
+                trailing: Column(
+                  children: [
+                    // TextButton(
+                    //   onPressed: () {
+                    //     onDelete.call(index);
+                    //   },
+                    //   child: const Text('删除'),
+                    // ),
 
-              TextButton(
-                onPressed: () {
-                  onEdit.call(index);
-                },
-                child: const Text('修改'),
-              ),
-
-              // TextButton(
-              //   onPressed: () {
-              //     onAdd.call();
-              //   },
-              //   child: const Text('添加'),
-              // ),
-            ],
-          ),
-        );
+                    TextButton(
+                      onPressed: () {
+                        onEdit.call(index);
+                      },
+                      child: const Text('修改'),
+                    ),
+                  ],
+                ),
+              );
+            });
       },
       itemCount: persons.length,
     ));

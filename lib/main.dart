@@ -1,8 +1,6 @@
-import 'package:build_bundles/page/isolate/isolate_page.dart';
 import 'package:build_bundles/page/provider/provider_main_page.dart';
 import 'package:flutter/material.dart';
 
-import 'page/animated/animated_page.dart';
 import 'page/chapter1_page/chapter1.dart';
 
 void main() {
@@ -17,6 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      themeMode: ThemeMode.dark,
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -28,6 +27,16 @@ class MyApp extends StatelessWidget {
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
         primarySwatch: Colors.blue,
+      ),
+      darkTheme: ThemeData(
+        primaryColor: Colors.red,
+        textButtonTheme: TextButtonThemeData(
+          style: ButtonStyle(
+            textStyle: MaterialStateProperty.all(
+              const TextStyle(fontSize: 22),
+            ),
+          ),
+        ),
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -86,6 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               child: const Text('第一章：绘制的开篇;'),
             ),
+
             TextButton(
               onPressed: () {
                 Navigator.of(context)
@@ -95,6 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               child: const Text('第二章：来看光影流动之美;'),
             ),
+
             TextButton(
               onPressed: () {
                 Navigator.of(context)
