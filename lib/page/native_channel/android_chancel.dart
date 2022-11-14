@@ -9,8 +9,10 @@ class AndroidChancel extends StatefulWidget {
 }
 
 class _AndroidChancelState extends State<AndroidChancel> {
-
   late MethodChannel channel;
+
+  var _data;
+
   @override
   void initState() {
     super.initState();
@@ -21,18 +23,39 @@ class _AndroidChancelState extends State<AndroidChancel> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('原生端与android之间端通信'),
+        title: const Text('原生端与android之间端通信11'),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          TextButton(
-            onPressed: () {
-
-            },
-            child: const Text("发送数据源"),
-          )
-        ],
+      body: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            TextButton(
+              onPressed: () async {
+                var result = await channel.invokeMethod<Map>(
+                    "sendData", {'name': 'laoMeng', 'age': 18});
+                var name = result!['name'] ?? '';
+                var age = result['age'] ?? '';
+                setState(() {
+                  _data = '$name,$age';
+                });
+              },
+              child: const Text("发送数据源"),
+            ),
+            Text('原生返回数据：$_data'),
+            // ListView(
+            //   // shrinkWrap: true,
+            //   children: [],
+            // ),
+            Expanded(
+              child: ListView(
+                shrinkWrap: true,
+                children: const [],
+              ),
+            ),
+            const Text('12322'),
+          ],
+        ),
       ),
     );
   }

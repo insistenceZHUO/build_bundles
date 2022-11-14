@@ -12,6 +12,69 @@ class IsolatePage extends StatefulWidget {
 
 class _IsolatePageState extends State<IsolatePage> {
   @override
+  void initState() {
+    super.initState();
+    multiThread();
+  }
+
+  static Future<void> multiThread() async {
+    ReceivePort r1 = ReceivePort();
+    SendPort p1 = r1.sendPort;
+
+    /// 创建一个子线程。
+    Isolate.spawn(newThread, p1);
+    SendPort p2 = await r1.first;
+    var msg = await sendToReceive(p2, 'hello');
+    print('主线程接收到：$msg');
+    // p2.send('来自主线程的消息');
+  }
+
+  static Future<void> newThread(SendPort p1) async {
+    ReceivePort r2 = ReceivePort();
+    SendPort p2 = r2.sendPort;
+    p1.send(p2);
+    await for (var msg in r2) {
+      var data = msg[0];
+      print('data:${data}');
+      SendPort replayPort = msg[1];
+      // 给主线程回复消息;
+      replayPort.send(data);
+    }
+  }
+
+  static Future sendToReceive(SendPort port, msg) async {
+    print('sendToReceive: ${msg.toString()}');
+    print('当前线程：名称 ${Isolate.current.debugName}');
+    ReceivePort reaponse = ReceivePort();
+    port.send([msg, reaponse.sendPort]);
+    return reaponse.first;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  // static Future<void> multiThread() async {
+  //   print('multiThread start');
+  //   print("当前线程的名称：${Isolate.current.debugName}");
+  //   ReceivePort r1 = ReceivePort();
+  //   SendPort p1 = r1.sendPort;
+  //   Isolate.spawn(newThread, p1);
+  //   // var msg = r1.first;
+  //   r1.listen((message) {
+  //     print('来自新线程的消息：${message.toString()}');
+  //     r1.close();
+  //   });
+  //   print('multiThread end');
+  // }
+
+  // static void newThread(SendPort p1) {
+  //   print('当前线程的名称：${Isolate.current.debugName}');
+  //   p1.send("abc");
+  // }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -68,10 +131,8 @@ class _IsolatePageState extends State<IsolatePage> {
         }
       }
     });
-
     print("port1--main isolate发送消息");
     port1.send([1, "这条信息是 port1 在main isolate中 发送的"]); //1.port1发送消息
-
     // newIsolate.kill();
   }
 }

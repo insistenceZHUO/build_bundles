@@ -1,7 +1,11 @@
+import 'package:build_bundles/page/native_channel/android_chancel.dart';
 import 'package:build_bundles/page/provider/provider_main_page.dart';
+import 'package:build_bundles/page/stream/stream_home_example_page.dart';
 import 'package:flutter/material.dart';
 
+import 'page/animated/animated_page.dart';
 import 'page/chapter1_page/chapter1.dart';
+import 'page/isolate/isolate_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -38,6 +42,15 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
+      localizationsDelegates: const [
+        // GlobalMaterialLocalizations.delegate, // 指定本地化的字符串
+        // GlobalCupertinoLocalizations.delegate, // 对应的Cupertino风格
+        // GlobalWidgetsLocalizations.delegate // 指定默认的文本排列方向, 由左到右或由右到左
+      ],
+      supportedLocales: const [
+        Locale("en"),
+        Locale("zh"),
+      ],
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
@@ -53,19 +66,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,67 +73,77 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (BuildContext context) {
-                  return const ProviderMainPage();
-                }));
-              },
-              child: const Text('provider'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (BuildContext context) {
-                  return const Chapter1Page();
-                }));
-              },
-              child: const Text('第一章：绘制的开篇;'),
-            ),
-
-            TextButton(
-              onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (BuildContext context) {
-                  return const Chapter1Page();
-                }));
-              },
-              child: const Text('第二章：来看光影流动之美;'),
-            ),
-
-            TextButton(
-              onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (BuildContext context) {
-                  return const Chapter1Page();
-                }));
-              },
-              child: const Text('Stream'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (BuildContext context) {
-                  return const AnimatedPage();
-                }));
-              },
-              child: const Text('AnimatedPage'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (BuildContext context) {
-                  return const IsolatePage();
-                }));
-              },
-              child: const Text('isolate'),
-            ),
-          ],
+        child: Container(
+          alignment: Alignment.topCenter,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (BuildContext context) {
+                    return const ProviderMainPage();
+                  }));
+                },
+                child: const Text('provider'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (BuildContext context) {
+                    return const Chapter1Page();
+                  }));
+                },
+                child: const Text('第一章：绘制的开篇;'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (BuildContext context) {
+                    return const Chapter1Page();
+                  }));
+                },
+                child: const Text('第二章：来看光影流动之美;'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (BuildContext context) {
+                    return const StreamHomeExamplePage();
+                  }));
+                },
+                child: const Text('Stream'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (BuildContext context) {
+                    return const AnimatedPage();
+                  }));
+                },
+                child: const Text('AnimatedPage'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (BuildContext context) {
+                    return const IsolatePage();
+                  }));
+                },
+                child: const Text('isolate'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (BuildContext context) {
+                    return const AndroidChancel();
+                  }));
+                },
+                child: const Text('android 与 flutter之间的通信'),
+              ),
+            ],
+          ),
         ),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
